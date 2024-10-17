@@ -18,17 +18,17 @@ const TaskList: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
 
-  if (isLoading) return <div className="text-center text-gray-600">Cargando tareas...</div>;
-  if (error) return <div className="text-center text-red-600">Error al cargar las tareas</div>;
+  if (isLoading) return <div className="text-center text-gray-600">Loading tasks...</div>;
+  if (error) return <div className="text-center text-red-600">Error loading tasks</div>;
 
   const handleDelete = (id: string) => {
     deleteTaskMutation.mutate(id, {
       onSuccess: () => {
-        toast.success('Tarea eliminada con éxito');
+        toast.success('Task deleted successfully');
       },
       onError: (error) => {
-        toast.error('Error al eliminar la tarea');
-        console.error('Error de eliminación:', error);
+        toast.error('Error deleting task');
+        console.error('Delete error:', error);
       },
     });
   };
@@ -38,11 +38,11 @@ const TaskList: React.FC = () => {
       { id: task.id, is_complete: !task.is_complete },
       {
         onSuccess: () => {
-          toast.success('Tarea actualizada con éxito');
+          toast.success('Task updated successfully');
         },
         onError: (error) => {
-          toast.error('Error al actualizar la tarea');
-          console.error('Error de actualización:', error);
+          toast.error('Error updating task');
+          console.error('Update error:', error);
         },
       }
     );
@@ -58,12 +58,12 @@ const TaskList: React.FC = () => {
       { id, title: editingTitle },
       {
         onSuccess: () => {
-          toast.success('Tarea actualizada con éxito');
+          toast.success('Task updated successfully');
           setEditingId(null);
         },
         onError: (error) => {
-          toast.error('Error al actualizar la tarea');
-          console.error('Error de actualización:', error);
+          toast.error('Error updating task');
+          console.error('Update error:', error);
         },
       }
     );
@@ -76,7 +76,7 @@ const TaskList: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Tareas</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Tasks</h2>
       {tasks && tasks.length > 0 ? (
         <ul className="space-y-4">
           {tasks.map((task: Task) => (
@@ -119,7 +119,7 @@ const TaskList: React.FC = () => {
           ))}
         </ul>
       ) : (
-        <p className="text-center text-gray-600">No hay tareas aún. ¡Agrega una tarea para comenzar!</p>
+        <p className="text-center text-gray-600">No tasks yet. Add a task to get started!</p>
       )}
     </div>
   );

@@ -16,11 +16,11 @@ const TaskForm: React.FC = () => {
         {
           onSuccess: () => {
             setTitle('');
-            toast.success('Tarea agregada con éxito');
+            toast.success('Task added successfully');
           },
           onError: (error) => {
-            toast.error('Error al agregar la tarea');
-            console.error('Error al agregar tarea:', error);
+            toast.error('Error adding task');
+            console.error('Add task error:', error);
           },
         }
       );
@@ -33,11 +33,11 @@ const TaskForm: React.FC = () => {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Ingresa una nueva tarea"
+        placeholder="Enter a new task"
         className="flex-grow"
       />
       <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
-        Agregar Tarea
+        Add Task
       </Button>
     </form>
   );
