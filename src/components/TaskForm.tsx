@@ -16,11 +16,11 @@ const TaskForm: React.FC = () => {
         {
           onSuccess: () => {
             setTitle('');
-            toast.success('Task added successfully');
+            toast.success('Tarea agregada con éxito');
           },
           onError: (error) => {
-            toast.error('Failed to add task');
-            console.error('Add task error:', error);
+            toast.error('Error al agregar la tarea');
+            console.error('Error al agregar tarea:', error);
           },
         }
       );
@@ -28,15 +28,17 @@ const TaskForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex space-x-2">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
       <Input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Enter a new task"
+        placeholder="Ingresa una nueva tarea"
         className="flex-grow"
       />
-      <Button type="submit">Add Task</Button>
+      <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+        Agregar Tarea
+      </Button>
     </form>
   );
 };

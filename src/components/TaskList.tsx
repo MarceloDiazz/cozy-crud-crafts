@@ -18,17 +18,17 @@ const TaskList: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
 
-  if (isLoading) return <div>Loading tasks...</div>;
-  if (error) return <div>Error loading tasks</div>;
+  if (isLoading) return <div className="text-center text-gray-600">Cargando tareas...</div>;
+  if (error) return <div className="text-center text-red-600">Error al cargar las tareas</div>;
 
   const handleDelete = (id: string) => {
     deleteTaskMutation.mutate(id, {
       onSuccess: () => {
-        toast.success('Task deleted successfully');
+        toast.success('Tarea eliminada con éxito');
       },
       onError: (error) => {
-        toast.error('Failed to delete task');
-        console.error('Delete error:', error);
+        toast.error('Error al eliminar la tarea');
+        console.error('Error de eliminación:', error);
       },
     });
   };
@@ -38,11 +38,11 @@ const TaskList: React.FC = () => {
       { id: task.id, is_complete: !task.is_complete },
       {
         onSuccess: () => {
-          toast.success('Task updated successfully');
+          toast.success('Tarea actualizada con éxito');
         },
         onError: (error) => {
-          toast.error('Failed to update task');
-          console.error('Update error:', error);
+          toast.error('Error al actualizar la tarea');
+          console.error('Error de actualización:', error);
         },
       }
     );
@@ -58,12 +58,12 @@ const TaskList: React.FC = () => {
       { id, title: editingTitle },
       {
         onSuccess: () => {
-          toast.success('Task updated successfully');
+          toast.success('Tarea actualizada con éxito');
           setEditingId(null);
         },
         onError: (error) => {
-          toast.error('Failed to update task');
-          console.error('Update error:', error);
+          toast.error('Error al actualizar la tarea');
+          console.error('Error de actualización:', error);
         },
       }
     );
@@ -75,12 +75,12 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">Tasks</h2>
+    <div>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Tareas</h2>
       {tasks && tasks.length > 0 ? (
         <ul className="space-y-4">
           {tasks.map((task: Task) => (
-            <li key={task.id} className="flex items-center justify-between bg-gray-50 p-4 rounded-md">
+            <li key={task.id} className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow transition-all hover:shadow-md">
               {editingId === task.id ? (
                 <>
                   <Input
@@ -89,10 +89,10 @@ const TaskList: React.FC = () => {
                     className="flex-grow mr-2"
                   />
                   <div>
-                    <Button variant="outline" size="icon" className="mr-2" onClick={() => handleSaveEdit(task.id)}>
+                    <Button variant="outline" size="icon" className="mr-2 text-green-600 hover:text-green-700" onClick={() => handleSaveEdit(task.id)}>
                       <Check className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="icon" onClick={handleCancelEdit}>
+                    <Button variant="outline" size="icon" className="text-red-600 hover:text-red-700" onClick={handleCancelEdit}>
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
@@ -100,16 +100,16 @@ const TaskList: React.FC = () => {
               ) : (
                 <>
                   <span 
-                    className={task.is_complete ? 'line-through text-gray-500' : ''}
+                    className={`cursor-pointer ${task.is_complete ? 'line-through text-gray-500' : 'text-gray-800'}`}
                     onClick={() => handleToggleComplete(task)}
                   >
                     {task.title}
                   </span>
                   <div>
-                    <Button variant="outline" size="icon" className="mr-2" onClick={() => handleEdit(task)}>
+                    <Button variant="outline" size="icon" className="mr-2 text-blue-600 hover:text-blue-700" onClick={() => handleEdit(task)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(task.id)}>
+                    <Button variant="outline" size="icon" className="text-red-600 hover:text-red-700" onClick={() => handleDelete(task.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -119,7 +119,7 @@ const TaskList: React.FC = () => {
           ))}
         </ul>
       ) : (
-        <p>No tasks yet. Add a task to get started!</p>
+        <p className="text-center text-gray-600">No hay tareas aún. ¡Agrega una tarea para comenzar!</p>
       )}
     </div>
   );
