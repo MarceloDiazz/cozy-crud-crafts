@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
+import { supabase } from '../lib/supabase';
 
 interface Task {
   id: number;
@@ -11,14 +12,11 @@ interface Task {
 }
 
 const addTask = async (title: string): Promise<void> => {
-  const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-  const newTask: Task = {
-    id: Date.now(),
-    title,
-    completed: false,
-  };
-  tasks.push(newTask);
-  localStorage.setItem('tasks', JSON.stringify(tasks));
+  const { error } = await supabase
+    .from('tasks')
+    .insert({ title, completed: false });
+
+  if (error) throw error;
 };
 
 const TaskForm: React.FC = () => {
@@ -31,6 +29,10 @@ const TaskForm: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       setTitle('');
       toast.success('Task added successfully');
+    },
+    onError: (error) => {
+      toast.error('Failed to add task');
+      console.error('Add task error:', error);
     },
   });
 

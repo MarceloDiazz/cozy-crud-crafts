@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
+import { supabase } from '../lib/supabase';
 
 interface Task {
   id: number;
@@ -11,14 +12,22 @@ interface Task {
 }
 
 const fetchTasks = async (): Promise<Task[]> => {
-  // In a real app, this would be an API call
-  return JSON.parse(localStorage.getItem('tasks') || '[]');
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
 };
 
 const deleteTask = async (id: number): Promise<void> => {
-  const tasks = await fetchTasks();
-  const updatedTasks = tasks.filter(task => task.id !== id);
-  localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+  const { error } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
 };
 
 const TaskList: React.FC = () => {
@@ -34,6 +43,10 @@ const TaskList: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       toast.success('Task deleted successfully');
+    },
+    onError: (error) => {
+      toast.error('Failed to delete task');
+      console.error('Delete error:', error);
     },
   });
 
