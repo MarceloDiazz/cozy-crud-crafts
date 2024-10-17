@@ -1,45 +1,29 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
-import { supabase } from '../lib/supabase';
-
-interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
-const addTask = async (title: string): Promise<void> => {
-  const { error } = await supabase
-    .from('tasks')
-    .insert({ title, completed: false });
-
-  if (error) throw error;
-};
+import { useAddTask } from '../integrations/supabase';
 
 const TaskForm: React.FC = () => {
   const [title, setTitle] = useState('');
-  const queryClient = useQueryClient();
+  const addTaskMutation = useAddTask();
 
-  const mutation = useMutation({
-    mutationFn: addTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      setTitle('');
-      toast.success('Task added successfully');
-    },
-    onError: (error) => {
-      toast.error('Failed to add task');
-      console.error('Add task error:', error);
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     if (title.trim()) {
-      mutation.mutate(title);
+      addTaskMutation.mutate(
+        { title, is_complete: false },
+        {
+          onSuccess: () => {
+            setTitle('');
+            toast.success('Task added successfully');
+          },
+          onError: (error) => {
+            toast.error('Failed to add task');
+            console.error('Add task error:', error);
+          },
+        }
+      );
     }
   };
 
